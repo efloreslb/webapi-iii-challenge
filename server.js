@@ -1,32 +1,25 @@
 const express = require('express');
+
+const postsRouter = require('./posts/postRouter.js');
+
 const server = express();
 
+//built in middleware
+server.use(express.json());
+
+//custom middleware
 server.use(logger);
-server.use(validateUserId);
-server.use(validateUser);
-server.use(validatePost);
+
+server.use('/api/posts', postsRouter);
 
 server.get('/', (req, res) => {
   res.send(`<h2>Let's write some middleware!</h2>`)
 });
 
-//custom middleware
-
+//custom middleware functions
 function logger(req, res, next) {
   console.log(`${req.method}, ${req.get('host')}, ${Date()}`);
   next();
 };
-
-function validateUserId(req, res, next) {
-
-}
-
-function validateUser(req, res, next) {
-
-}
-
-function validatePost(req, res, next) {
-
-}
 
 module.exports = server;
