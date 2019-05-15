@@ -1,5 +1,4 @@
 const express = require('express');
-
 const server = express();
 
 server.use(logger);
@@ -14,7 +13,8 @@ server.get('/', (req, res) => {
 //custom middleware
 
 function logger(req, res, next) {
-
+  console.log(`${req.method}, ${req.get('host')}, ${Date()}`);
+  next();
 };
 
 function validateUserId(req, res, next) {
