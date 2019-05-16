@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
    }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', validatePostId, async (req, res) => {
    const { id } = req.params;
    try {
       const post = await Posts.getById(id);
@@ -21,7 +21,7 @@ router.get('/:id', async (req, res) => {
    }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', validatePostId, async (req, res) => {
    const { id } = req.params;
    try {
       const post = await Posts.remove(id);
@@ -31,7 +31,7 @@ router.delete('/:id', async (req, res) => {
    }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', validatePostId, async (req, res) => {
    const { id } = req.params;
    const { body } = req;
    try {
@@ -43,8 +43,19 @@ router.put('/:id', async (req, res) => {
 });
 
 // custom middleware
-function validatePostId(req, res, next) {
-
+async function validatePostId(req, res, next) {
+   try {
+      const { id } = req.params;
+      const post = await Posts.getById(id);
+      if (post) {
+         req.post = post;
+         next();
+      } else {
+         res.status(400).json({message: "invalid post id"})
+      }
+   } catch {
+      res.status(500).json({error: "Something went wrong"})
+   }
 };
 
 module.exports = router;
